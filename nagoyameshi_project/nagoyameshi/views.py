@@ -1,9 +1,7 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render
 
 # Viewを継承したビュークラスを作る。(ListViewやCreateViewなどは、処理が抽象化されている(処理内容がわかりにくい)。)
 from django.views import View
-
-from .models import Topic
 
 # models.py の中の Restaurant クラスをimportするには？
 #from .models import Restaurant
@@ -17,7 +15,7 @@ from .models import Restaurant,Category
 
 # トップページで一覧表示をするビュー
 # index.htmlをレンダリングするビューを作る
-class IndexView(View):
+'''class IndexView(View):
 
     def get(self, request, *args, **kwargs):
 
@@ -62,6 +60,39 @@ class IndexView(View):
 
         # ページのレンダリング
         return render(request, "nagoyameshi/index.html", context)
+'''
+
+class IndexView(View):
+
+    def get(self, request, *args, **kwargs):
+    
+        context = {}
+        #クエリを初期化しておく。
+        query   = Q() 
+
+        #検索キーワードがある場合のみ取り出す
+        if "search" in request.GET:
+
+            #全角スペースを半角スペースに変換、スペース区切りでリストにする。
+            words   = request.GET["search"].replace("　"," ").split(" ")
+
+            #クエリを追加する
+            for word in words:
+
+                #空欄の場合は次のループへ
+                if word == "": 
+                    continue
+
+                #TIPS:AND検索の場合は&を、OR検索の場合は|を使用する。
+                #query &= Q(comment__contains=word)
+                query &= Q(name__contains=word)
+
+        #作ったクエリを実行(検索のパラメータがない場合、絞り込みは発動しない。)
+        #context["topics"] = Topic.objects.filter(query)
+        context["restaurants"] = Restaurant.objects.filter(query)
+
+        #return render(request,"bbs/index.html",context)
+        return render(request,"nagoyameshi/index.html",context)
 
 # urls.pyから呼び出せるようにする
 index   = IndexView.as_view()
@@ -74,37 +105,3 @@ class RestaurantView(View):
         return render(request, "nagoyameshi/restaurant.html", context)
 
 restaurant = RestaurantView.as_view()
-
-#TODO:クエリビルダをインポート
-from django.db.models import Q
-
-class IndexView(View):
-
-    def get(self, request, *args, **kwargs):
-        
-        context = {}
-        #クエリを初期化しておく。
-        query   = Q()
-
-        #検索キーワードがある場合のみ取り出す
-        if "search" in request.GET:
-
-            #全角スペースを半角スペースに変換、スペース区切りでリストにする。
-            words   = request.GET["search"].replace("　"," ").split(" ")
-
-            #クエリを追加する
-            for word in words:
-
-                #空欄の場合は次のループへ
-                if word == "":
-                    continue
-
-                #TIPS:AND検索の場合は&を、OR検索の場合は|を使用する。
-                query &= Q(comment__contains=word)
-
-        #作ったクエリを実行(検索のパラメータがない場合、絞り込みは発動しない。)
-        context["topics"] = Topic.objects.filter(query)
-
-        return render(request,"bbs/index.html",context)
-
-index   = IndexView.as_view()
