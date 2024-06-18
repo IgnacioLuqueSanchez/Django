@@ -1,7 +1,9 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 
-# Viewを継承したビュークラスを作る。(ListViewやCreateViewなどは、処理が抽象化されている(処理内容がわかりにくい)。)
+
 from django.views import View
+from django.db.models import Q
+
 
 # models.py の中の Restaurant クラスをimportするには？
 #from .models import Restaurant
