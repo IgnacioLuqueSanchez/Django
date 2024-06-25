@@ -1,0 +1,21 @@
+{% extends 'nagoyameshi/base.html' %}
+
+{% block head %}
+{% endblock %}
+
+{% block main %}
+<h2 class="text-success p-5 text-center">レビュー</h2>
+
+{# 店舗1件分の表示をする。 #}
+
+
+{{ review }}
+
+<div>
+    <h2>{{ review.name }}</h2>
+    <div>店舗: {{ review.restaurant }}</div>
+    <div>投稿者: {{ review.user }}</div>
+    <div>内容: {{ review.content }}</div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends 'nagoyameshi/base.html' %}
+
+{% block head %}
+{% endblock %}
+
+{% block main %}
+<h2 class="text-success p-5 text-center">店舗個別ページ</h2>
+
+{# 店舗1件分の表示をする。 #}
+
+
+{{ restaurant }}
+
+<div>
+    <h2>{{ restaurant.name }}</h2>
+    <div>営業時間: {{ restaurant.start_at }} ~ {{ restaurant.end_at }}</div>
+    <div>カテゴリ: {{ restaurant.category }}</div>
+    <div>価格帯: {{ restaurant.cost }}円</div>
+</div>
+
+
+<h3>レビュー</h3>
+
+{# 投稿時は、POSTメソッドのリクエストで送信する。 #}
+<form action="" method="post">
+    {# POSTメソッドのリクエストを送る場合は、csrf_token のテンプレートタグを用意する。 #}
+    {% csrf_token %}
+    {# TODO: restaurant と user のフォームも用意 #}
+    
+    <textarea name="content"></textarea>
+    <input type="submit" value="送信">
+</form>
+
+
+
+{% endblock %}
